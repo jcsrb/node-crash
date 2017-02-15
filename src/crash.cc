@@ -11,7 +11,6 @@ using v8::Value;
 
 void Method(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
-  delete (int*)0xffffffff;
   throw "Crash!";
   args.GetReturnValue().Set(String::NewFromUtf8(isolate, "world"));
 }
