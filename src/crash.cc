@@ -1,19 +1,25 @@
 #include <node.h>
-#include <v8.h>
 
-using namespace v8;
+namespace demo {
 
-Handle<Value>
-Method(const Arguments& args) {
-  HandleScope scope;
+using v8::FunctionCallbackInfo;
+using v8::Isolate;
+using v8::Local;
+using v8::Object;
+using v8::String;
+using v8::Value;
+
+void Method(const FunctionCallbackInfo<Value>& args) {
+  Isolate* isolate = args.GetIsolate();
   delete (int*)0xffffffff;
   throw "Crash!";
-  return scope.Close(String::New("Unreachable!"));
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate, "world"));
 }
 
-extern "C" void
-init(Handle<Object> target) {
-  target->Set(String::NewSymbol("crash"),
-    FunctionTemplate::New(Method)->GetFunction());
+void init(Local<Object> exports) {
+  NODE_SET_METHOD(exports, "hello", Method);
 }
+
 NODE_MODULE(crash, init)
+
+}
